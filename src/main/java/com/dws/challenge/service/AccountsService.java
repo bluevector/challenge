@@ -46,6 +46,8 @@ public class AccountsService {
 
     if(newBalance.compareTo(BigDecimal.ZERO) > 0) {
       //making the entire operation atomic together
+      // This solution prevents deadlock issue, as without acquiring lock if there was another thread trying to do the
+      // transfer in reverse it can cause a deadlock situation
       synchronized (this) {
         fromAccount.setBalance(newBalance);
         fromAccount = this.accountsRepository.updateAccount(fromAccount);
